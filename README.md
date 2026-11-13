@@ -10,6 +10,8 @@
 
 The job pulls 11 official series from the Central Bank of Brazil (SGS API): credit portfolio for households and companies, default rates, average lending rate, Selic, IPCA, USD/BRL and IBC-Br. It runs as a Databricks Workflow with four tasks, deployed with **Databricks Asset Bundles**, and is governed with **Unity Catalog**.
 
+![Full run with live Central Bank data: 5,505 rows and all quality checks passing](docs/run.png)
+
 ### Architecture
 
 ```
@@ -115,6 +117,8 @@ Databricks, Delta Lake, Apache Spark, PySpark, Unity Catalog, Databricks Asset B
 **Um lakehouse em camadas (bronze, silver, gold) no Databricks e Delta Lake que carrega indicadores de crédito e economia do Banco Central, trata revisões de dados com MERGE e barra dados ruins antes de chegarem ao BI.**
 
 O job busca 11 séries oficiais do Banco Central (API do SGS): saldo de crédito de pessoas físicas e jurídicas, inadimplência, taxa média de juros, Selic, IPCA, dólar e IBC-Br. Ele roda como um Workflow do Databricks com quatro tarefas, publicado com **Databricks Asset Bundles**, e é governado com **Unity Catalog**.
+
+![Execução completa com dados reais do Banco Central: 5.505 linhas e todas as checagens aprovadas](docs/run.png)
 
 ### Camadas
 
