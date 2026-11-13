@@ -1,0 +1,30 @@
+bundle:
+  name: credit_lakehouse
+
+include:
+  - resources/*.yml
+
+artifacts:
+  python_artifact:
+    type: whl
+    build: python -m pip wheel . --no-deps -w dist
+
+variables:
+  catalog:
+    description: Catálogo do Unity Catalog
+    default: workspace
+  schema:
+    description: Schema das tabelas
+    default: credito
+
+targets:
+  dev:
+    mode: development
+    default: true
+    variables:
+      schema: credito_dev
+
+  prod:
+    mode: production
+    variables:
+      schema: credito

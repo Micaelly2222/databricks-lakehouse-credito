@@ -1,0 +1,56 @@
+resources:
+  jobs:
+    credit_lakehouse:
+      name: credit_lakehouse
+      description: Ingestão das séries do Banco Central, camadas bronze/silver/gold e checagens de qualidade
+
+      schedule:
+        quartz_cron_expression: "0 0 9 6,21 * ?"
+        timezone_id: America/Sao_Paulo
+        pause_status: UNPAUSED
+
+      max_concurrent_runs: 1
+
+      environments:
+        - environment_key: default
+          spec:
+            client: "2"
+            dependencies:
+              - ../dist/*.whl
+
+      tasks:
+        - task_key: bronze
+          environment_key: default
+          python_wheel_task:
+            package_name: credit_lakehouse
+            entry_point: main
+            parameters: ["--step", "bronze", "--catalog", "${var.catalog}", "--schema", "${var.schema}"]
+          max_retries: 2
+          min_retry_interval_millis: 60000
+
+        - task_key: silver
+          depends_on:
+            - task_key: bronze
+          environment_key: default
+          python_wheel_task:
+            package_name: credit_lakehouse
+            entry_point: main
+            parameters: ["--step", "silver", "--catalog", "${var.catalog}", "--schema", "${var.schema}"]
+
+        - task_key: gold
+          depends_on:
+            - task_key: silver
+          environment_key: default
+          python_wheel_task:
+            package_name: credit_lakehouse
+            entry_point: main
+            parameters: ["--step", "gold", "--catalog", "${var.catalog}", "--schema", "${var.schema}", "--optimize"]
+
+        - task_key: quality
+          depends_on:
+            - task_key: gold
+          environment_key: default
+          python_wheel_task:
+            package_name: credit_lakehouse
+            entry_point: main
+            parameters: ["--step", "quality", "--catalog", "${var.catalog}", "--schema", "${var.schema}"]
